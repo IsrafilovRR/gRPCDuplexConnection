@@ -27,7 +27,7 @@ namespace WeatherSystem.EventsGenerator
             services.AddHostedService<InitHostedService>();
             services.AddHostedService<SensorStatesBackgroundService>();
 
-            services.Configure<GeneratorSettings>(_configuration.GetSection("GeneratorSettings"));
+            services.Configure<GeneratorOptions>(_configuration.GetSection("GeneratorOptions"));
         }
 
         public void Configure(IApplicationBuilder app)

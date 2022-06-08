@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using Grpc.Core;
 using Polly;
+using WeatherSystem.EventClient.Models;
 using WeatherSystem.EventClient.Storages;
+using WeatherSystem.EventClient.Storages.Interfaces;
 using WeatherSystem.EventsGenerator.Proto;
 
 namespace WeatherSystem.EventClient.HostedServices;
@@ -14,6 +16,7 @@ public class SensorEventsBackgroundService : BackgroundService
     private readonly IServiceProvider _provider;
     private readonly ISubscriptionsStorage _subscriptionsStorage;
     private readonly ILogger<SensorEventsBackgroundService> _logger;
+    private readonly ISensorStatesStorage _sensorStatesStorage;
 
     private const int MaxRetries = int.MaxValue;
 
@@ -21,10 +24,11 @@ public class SensorEventsBackgroundService : BackgroundService
     /// Ctor
     /// </summary>
     public SensorEventsBackgroundService(IServiceProvider provider, ISubscriptionsStorage subscriptionsStorage,
-        ILogger<SensorEventsBackgroundService> logger)
+        ILogger<SensorEventsBackgroundService> logger, ISensorStatesStorage sensorStatesStorage)
     {
         _provider = provider;
         _logger = logger;
+        _sensorStatesStorage = sensorStatesStorage;
         _subscriptionsStorage = subscriptionsStorage;
     }
 
@@ -63,7 +67,16 @@ public class SensorEventsBackgroundService : BackgroundService
                 while (await eventResponseStream.ResponseStream.MoveNext(stoppingToken))
                 {
                     var responseStreamCurrent = eventResponseStream.ResponseStream.Current;
+                    
                     _logger.LogDebug(JsonSerializer.Serialize(responseStreamCurrent));
+                    
+                    _sensorStatesStorage.AddState(responseStreamCurrent.SensorId, new Models.SensorEvent()
+                    {
+                        Co2 = responseStreamCurrent.State.Co2,
+                        Humidity = responseStreamCurrent.State.Humidity,
+                        Temperature = responseStreamCurrent.State.Temperature,
+                        CreatedAt = responseStreamCurrent.CreatedAt.ToDateTime()
+                    });
                 }
             }
             catch (RpcException exception)

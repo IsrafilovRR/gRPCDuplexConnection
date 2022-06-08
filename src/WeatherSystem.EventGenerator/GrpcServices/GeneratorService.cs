@@ -12,14 +12,14 @@ public class EventGeneratorService : EventGenerator.EventGeneratorBase
 {
     private readonly ISensorStatesStore _sensorStateStore;
     private readonly ILogger<EventGeneratorService> _logger;
-    private readonly GeneratorSettings _generatorSettings;
+    private readonly GeneratorOptions _generatorOptions;
 
     public EventGeneratorService(ISensorStatesStore sensorStateStore, ISensorStore sensorStore,
-        ILogger<EventGeneratorService> logger, IOptions<GeneratorSettings> generatorSettings)
+        ILogger<EventGeneratorService> logger, IOptions<GeneratorOptions> generatorSettings)
     {
         _sensorStateStore = sensorStateStore;
         _logger = logger;
-        _generatorSettings = generatorSettings.Value ?? throw new ArgumentException("Generator settings is null");
+        _generatorOptions = generatorSettings.Value ?? throw new ArgumentException("Generator settings object is null");
     }
 
     public override async Task EventStream(IAsyncStreamReader<GetSensorEventsRequest> requestStream,
@@ -51,7 +51,7 @@ public class EventGeneratorService : EventGenerator.EventGeneratorBase
                     _logger.LogDebug("Send response: {0}", JsonSerializer.Serialize(sensorEvent));
                 }
 
-                await Task.Delay(_generatorSettings.EventsGenerationPeriodMs);
+                await Task.Delay(_generatorOptions.EventsGenerationPeriodInMilliseconds);
             }
         }
         catch (OperationCanceledException)

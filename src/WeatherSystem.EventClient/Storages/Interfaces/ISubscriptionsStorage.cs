@@ -1,4 +1,4 @@
-﻿namespace WeatherSystem.EventClient.Storages;
+﻿namespace WeatherSystem.EventClient.Storages.Interfaces;
 
 public interface ISubscriptionsStorage
 {
