@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using System.Text.Json;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Options;
 using WeatherSystem.EventsGenerator.Options;
@@ -9,20 +10,16 @@ namespace WeatherSystem.EventsGenerator.GrpcServices;
 
 public class EventGeneratorService : EventGenerator.EventGeneratorBase
 {
-    private readonly ISensorStore _sensorStore;
     private readonly ISensorStatesStore _sensorStateStore;
     private readonly ILogger<EventGeneratorService> _logger;
     private readonly GeneratorSettings _generatorSettings;
-    private readonly Random _random;
 
     public EventGeneratorService(ISensorStatesStore sensorStateStore, ISensorStore sensorStore,
         ILogger<EventGeneratorService> logger, IOptions<GeneratorSettings> generatorSettings)
     {
         _sensorStateStore = sensorStateStore;
-        _sensorStore = sensorStore;
         _logger = logger;
         _generatorSettings = generatorSettings.Value ?? throw new ArgumentException("Generator settings is null");
-        _random = new Random();
     }
 
     public override async Task EventStream(IAsyncStreamReader<GetSensorEventsRequest> requestStream,
@@ -40,6 +37,7 @@ public class EventGeneratorService : EventGenerator.EventGeneratorBase
                     while (await requestStream.MoveNext(context.CancellationToken))
                     {
                         var sensorIds = requestStream.Current.SensorId.ToList();
+                        subscribedSensorIds.Clear();
                         subscribedSensorIds.UnionWith(sensorIds);
                     }
                 }
@@ -47,9 +45,10 @@ public class EventGeneratorService : EventGenerator.EventGeneratorBase
 
             while (!context.CancellationToken.IsCancellationRequested)
             {
-                foreach (var sensorEvent in GenerateSensorsEvents(subscribedSensorIds))
+                foreach (var sensorEvent in GenerateSensorsEvents(subscribedSensorIds.ToArray()))
                 {
                     await responseStream.WriteAsync(sensorEvent, context.CancellationToken);
+                    _logger.LogDebug("Send response: {0}", JsonSerializer.Serialize(sensorEvent));
                 }
 
                 await Task.Delay(_generatorSettings.EventsGenerationPeriodMs);
@@ -61,7 +60,7 @@ public class EventGeneratorService : EventGenerator.EventGeneratorBase
         }
     }
 
-    private IEnumerable<GetSensorEventsResponse> GenerateSensorsEvents(HashSet<long> sensorsIds)
+    private IEnumerable<GetSensorEventsResponse> GenerateSensorsEvents(long[] sensorsIds)
     {
         foreach (var sensorId in sensorsIds)
         {

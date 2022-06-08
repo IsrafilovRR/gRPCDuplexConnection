@@ -1,10 +1,10 @@
 ﻿{
-    "profiles": {
-    "WeatherSystem.EventsGenerator": {
+  "profiles": {
+    "WeatherSystem.EventClient": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
-      "applicationUrl": "https://localhost:7235",
+      "applicationUrl": "https://localhost:7063",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -30,7 +30,7 @@ public class InitHostedService : IHostedService
             Type = SensorType.Outside
         });
         
-        _sensorStore.AddOrUpdateSensor(2, new Sensor
+        _sensorStore.AddOrUpdateSensor(3, new Sensor
         {
             Id = 3,
             Name = "OutsideSensor",

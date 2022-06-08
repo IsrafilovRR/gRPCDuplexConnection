@@ -1,3 +1,4 @@
+using WeatherSystem.EventsGenerator.GrpcServices;
 using WeatherSystem.EventsGenerator.HostedServices;
 using WeatherSystem.EventsGenerator.Options;
 using WeatherSystem.EventsGenerator.Storages;
@@ -17,10 +18,11 @@ namespace WeatherSystem.EventsGenerator
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGrpc();
             services.AddSingleton<ISensorStore, SensorStore>();
             services.AddSingleton<ISensorStatesStore, SensorStatesStore>();
             services.AddMvcCore();
+            
+            services.AddGrpc();
 
             services.AddHostedService<InitHostedService>();
             services.AddHostedService<SensorStatesBackgroundService>();
@@ -31,7 +33,11 @@ namespace WeatherSystem.EventsGenerator
         public void Configure(IApplicationBuilder app)
         {
             app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapGrpcService<EventGeneratorService>();
+            });
         }
     }
 }

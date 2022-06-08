@@ -14,7 +14,7 @@ message GetSensorEventsResponse
 {
   SensorState state = 1;
   int64 sensorId = 2;
-  google.protobuf.Timestamp createdAt = 3;    
+  google.protobuf.Timestamp createdAt = 3;
 }
 
 message GetSensorEventsRequest
@@ -33,7 +33,7 @@ message Sensor
 {
   int64 id = 1;
   string name = 2;
-  SensorType type = 3;  
+  SensorType type = 3;
 }
 
 enum SensorType {
