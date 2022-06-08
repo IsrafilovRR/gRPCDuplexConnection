@@ -4,7 +4,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FB699834-9FD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3C425117-32C3-4539-9320-43FFCDA3189D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSystem.EventsGenerator", "src\WeatherSystem.EventsGenerator\WeatherSystem.EventsGenerator.csproj", "{BC4F067B-0F50-4966-9ECF-568C8CB75E08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSystem.EventGenerator", "src\WeatherSystem.EventGenerator\WeatherSystem.EventGenerator.csproj", "{BC4F067B-0F50-4966-9ECF-568C8CB75E08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
