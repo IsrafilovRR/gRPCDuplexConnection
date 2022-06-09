@@ -30,7 +30,9 @@ public class AggregationsController : ControllerBase
     
     /// <summary>
     /// Get aggregation based on other aggregations
+    /// /aggregations?startTime=2012-12-31T22:00:00.000Z
     /// </summary>
+    [HttpGet]
     public async Task<ActionResult> GetAggregationFromStartTime([FromQuery] DateTime startTime)
     {
         return Ok(_aggregationCalculationService.GetAggregatedStatesByStartTime(startTime));
