@@ -3,7 +3,6 @@ using Grpc.Core;
 using Polly;
 using WeatherSystem.EventClient.Models;
 using WeatherSystem.EventClient.Storages;
-using WeatherSystem.EventClient.Storages.Interfaces;
 using WeatherSystem.EventsGenerator.Proto;
 
 namespace WeatherSystem.EventClient.HostedServices;
@@ -62,6 +61,7 @@ public class SensorEventsBackgroundService : BackgroundService
                 // if our connection to the server was lost after we had some subscription
                 await SendSubscriptionTask();
 
+                // add event if our subscriptions has been changed
                 _subscriptionsStorage.Notify += async () => await SendSubscriptionTask();
 
                 while (await eventResponseStream.ResponseStream.MoveNext(stoppingToken))

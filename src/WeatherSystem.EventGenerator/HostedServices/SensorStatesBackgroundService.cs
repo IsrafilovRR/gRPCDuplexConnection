@@ -3,24 +3,28 @@ using WeatherSystem.EventsGenerator.Storages;
 
 namespace WeatherSystem.EventsGenerator.HostedServices;
 
+/// <summary>
+/// Background service which generates values on all available sensors
+/// </summary>
 public class SensorStatesBackgroundService : BackgroundService
 {
-    private readonly ISensorStore _sensorStore;
-    private readonly ISensorStatesStore _sensorStatesStore;
+    private readonly ISensorStorage _sensorStorage;
+    private readonly ISensorStatesStorage _sensorStatesStorage;
     private readonly ILogger<InitHostedService> _logger;
     private readonly Random _random = new();
 
-    public SensorStatesBackgroundService(ISensorStore sensorStore, ILogger<InitHostedService> logger,
-        ISensorStatesStore sensorStatesStore)
+    public SensorStatesBackgroundService(ISensorStorage sensorStorage, ILogger<InitHostedService> logger,
+        ISensorStatesStorage sensorStatesStorage)
     {
-        _sensorStore = sensorStore;
+        _sensorStorage = sensorStorage;
         _logger = logger;
-        _sensorStatesStore = sensorStatesStore;
+        _sensorStatesStorage = sensorStatesStorage;
     }
 
+    /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var sensors = _sensorStore.GetAllSensors();
+        var sensors = _sensorStorage.GetAllSensors();
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -35,9 +39,10 @@ public class SensorStatesBackgroundService : BackgroundService
                     Co2 = sensor.Type == SensorType.Inside ? _random.Next(500, 2000) : _random.Next(350, 500),
                 };
 
-                _sensorStatesStore.AddOrUpdateState(sensor.Id, sensorEvent);
+                _sensorStatesStorage.AddOrUpdateState(sensor.Id, sensorEvent);
             }
             
+            // it is delay like every sensor changes his value every 0.5 sec, it is not related to sending events
             await Task.Delay(500, stoppingToken);
         }
     }

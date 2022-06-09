@@ -1,6 +1,4 @@
-﻿using WeatherSystem.EventClient.Storages.Interfaces;
-
-namespace WeatherSystem.EventClient.Storages;
+﻿namespace WeatherSystem.EventClient.Storages.Impl;
 
 public class SubscriptionsStorage : ISubscriptionsStorage
 {

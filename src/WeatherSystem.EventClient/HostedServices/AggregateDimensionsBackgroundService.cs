@@ -2,7 +2,6 @@
 using WeatherSystem.EventClient.Models;
 using WeatherSystem.EventClient.Options;
 using WeatherSystem.EventClient.Storages;
-using WeatherSystem.EventClient.Storages.Interfaces;
 
 namespace WeatherSystem.EventClient.HostedServices;
 
@@ -49,6 +48,11 @@ public class AggregateSensorStatesHostedService : IHostedService, IDisposable
             var averageTemp = 0;
             var averageHumidity = 0;
             var averageCo2 = 0;
+            
+            // todo min and max Co2
+            // todo comments
+            // todo ruchki for aggregations
+            // todo diagnosis
             
             if (pair.Value != null)
             {

@@ -1,11 +1,14 @@
 using System.Collections.Concurrent;
 using WeatherSystem.EventClient.Models;
-using WeatherSystem.EventClient.Storages.Interfaces;
 
-namespace WeatherSystem.EventClient.Storages;
+namespace WeatherSystem.EventClient.Storages.Impl;
 
+/// <inheritdoc />
 public class SensorStatesStorage : ISensorStatesStorage
 {
+    /// <summary>
+    /// Use linked list as value here to iterate easily from the end of the sensors state
+    /// </summary>
     private readonly ConcurrentDictionary<long, LinkedList<SensorEvent>> _sensorsStates = new();
 
     /// <inheritdoc />
@@ -16,13 +19,15 @@ public class SensorStatesStorage : ISensorStatesStorage
             _sensorsStates[sensorId].AddLast(@event);
             return;
         }
-        _sensorsStates.TryAdd(sensorId, new LinkedList<SensorEvent>(new []{@event}));
+
+        _sensorsStates.TryAdd(sensorId, new LinkedList<SensorEvent>(new[] { @event }));
     }
 
+    /// <inheritdoc />
     public Dictionary<long, List<SensorEvent>?> GetStatesForPeriod(TimeSpan timeSpan)
     {
         var result = new Dictionary<long, List<SensorEvent>?>();
-        
+
         foreach (var sensorKey in _sensorsStates.Keys)
         {
             result.Add(sensorKey, GetSensorEventsByLastCreatedTime(sensorKey, timeSpan));
@@ -31,6 +36,9 @@ public class SensorStatesStorage : ISensorStatesStorage
         return result;
     }
 
+    /// <summary>
+    /// Get sensor event from timespan and till now
+    /// </summary>
     private List<SensorEvent>? GetSensorEventsByLastCreatedTime(long sensorId, TimeSpan timeSpan)
     {
         if (!_sensorsStates.ContainsKey(sensorId))

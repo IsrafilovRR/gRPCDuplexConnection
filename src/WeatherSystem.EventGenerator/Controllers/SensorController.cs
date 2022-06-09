@@ -1,25 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WeatherSystem.EventsGenerator.Models;
 using WeatherSystem.EventsGenerator.Storages;
 
 namespace WeatherSystem.EventsGenerator.Controllers;
 
+/// <summary>
+/// Controller for getting sensor states 
+/// </summary>
 [Route("sensors")]
 public class SensorController : ControllerBase
 {
-    private readonly ISensorStore _sensorStore;
-    private readonly ISensorStatesStore _sensorStatesStore;
+    private readonly ISensorStorage _sensorStorage;
+    private readonly ISensorStatesStorage _sensorStatesStorage;
 
-    public SensorController(ISensorStatesStore sensorStatesStore, ISensorStore sensorStore)
+    public SensorController(ISensorStatesStorage sensorStatesStorage, ISensorStorage sensorStorage)
     {
-        _sensorStatesStore = sensorStatesStore;
-        _sensorStore = sensorStore;
+        _sensorStatesStorage = sensorStatesStorage;
+        _sensorStorage = sensorStorage;
     }
 
+    /// <summary>
+    /// Get one sensor state by id
+    /// </summary>
     [HttpGet("{id:long}")]
     public ActionResult GetSensorState(int id)
     {
-        if (_sensorStatesStore.TryGetState(id, out var state))
+        if (_sensorStatesStorage.TryGetState(id, out var state))
         {
             return Ok(state);
         }
@@ -27,9 +32,12 @@ public class SensorController : ControllerBase
         return NotFound();
     }
 
+    /// <summary>
+    /// Get all available sensors state 
+    /// </summary>
     [HttpGet]
     public ActionResult GetSensorsState()
     {
-        return Ok(_sensorStatesStore.GetAllSensorsWithStates());
+        return Ok(_sensorStatesStorage.GetAllSensorsWithStates());
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeatherSystem.EventClient.Storages;
-using WeatherSystem.EventClient.Storages.Interfaces;
 
 namespace WeatherSystem.EventClient.Controllers;
 
@@ -17,6 +16,10 @@ public class SubscriptionController : ControllerBase
         _subscriptionsStorage = subscriptionsStorage;
     }
 
+    /// <summary>
+    /// Subscribe on sensors
+    /// </summary>
+    /// <param name="sensorIds">Sensors ids</param>
     [HttpPut]
     public async Task<ActionResult> SubscribeOnSensors([FromQuery] List<long> sensorIds)
     {
@@ -24,6 +27,10 @@ public class SubscriptionController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Unsubscribe on sensors
+    /// </summary>
+    /// <param name="sensorIds">Sensors ids</param>
     [HttpDelete]
     public async Task<ActionResult> UnsubscribeOfSensors([FromQuery] List<long> sensorIds)
     {
@@ -31,6 +38,9 @@ public class SubscriptionController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Get all sensors
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult> GetSubscriptions()
     {

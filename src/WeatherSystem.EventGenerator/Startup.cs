@@ -2,6 +2,7 @@ using WeatherSystem.EventsGenerator.GrpcServices;
 using WeatherSystem.EventsGenerator.HostedServices;
 using WeatherSystem.EventsGenerator.Options;
 using WeatherSystem.EventsGenerator.Storages;
+using WeatherSystem.EventsGenerator.Storages.Impl;
 
 namespace WeatherSystem.EventsGenerator
 {
@@ -18,8 +19,8 @@ namespace WeatherSystem.EventsGenerator
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ISensorStore, SensorStore>();
-            services.AddSingleton<ISensorStatesStore, SensorStatesStore>();
+            services.AddSingleton<ISensorStorage, SensorStorage>();
+            services.AddSingleton<ISensorStatesStorage, SensorStatesStorage>();
             services.AddMvcCore();
             
             services.AddGrpc();

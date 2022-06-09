@@ -6,7 +6,7 @@ using Polly;
 using WeatherSystem.EventClient.HostedServices;
 using WeatherSystem.EventClient.Options;
 using WeatherSystem.EventClient.Storages;
-using WeatherSystem.EventClient.Storages.Interfaces;
+using WeatherSystem.EventClient.Storages.Impl;
 using WeatherSystem.EventsGenerator.Proto;
 
 namespace WeatherSystem.EventClient

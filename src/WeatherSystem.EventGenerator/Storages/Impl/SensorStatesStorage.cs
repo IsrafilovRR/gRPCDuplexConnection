@@ -2,35 +2,29 @@
 using System.Diagnostics.CodeAnalysis;
 using WeatherSystem.EventsGenerator.Models;
 
-namespace WeatherSystem.EventsGenerator.Storages;
+namespace WeatherSystem.EventsGenerator.Storages.Impl;
 
-public interface ISensorStatesStore
+/// <inheritdoc />
+public class SensorStatesStorage : ISensorStatesStorage
 {
-    void AddOrUpdateState(long sensorId, SensorState state);
-
-    IEnumerable<Sensor> GetAllSensorsWithStates();
-
-    bool TryGetState(long sensorId, [MaybeNullWhen(false)] out SensorState state);
-}
-
-public class SensorStatesStore : ISensorStatesStore
-{
-    private readonly ISensorStore _sensorStore;
+    private readonly ISensorStorage _sensorStorage;
     private readonly ConcurrentDictionary<long, SensorState> _sensorEvents = new();
 
-    public SensorStatesStore(ISensorStore sensorStore)
+    public SensorStatesStorage(ISensorStorage sensorStorage)
     {
-        _sensorStore = sensorStore;
+        _sensorStorage = sensorStorage;
     }
 
+    /// <inheritdoc />
     public void AddOrUpdateState(long sensorId, SensorState state)
     {
         _sensorEvents.AddOrUpdate(sensorId, state, (_, _) => state);
     }
 
+    /// <inheritdoc />
     public IEnumerable<Sensor> GetAllSensorsWithStates()
     {
-        foreach (var sensor in _sensorStore.GetAllSensors())
+        foreach (var sensor in _sensorStorage.GetAllSensors())
         {
             if (!TryGetState(sensor.Id, out var sensorState)) continue;
             sensor.State = sensorState;
@@ -38,6 +32,7 @@ public class SensorStatesStore : ISensorStatesStore
         }
     }
 
+    /// <inheritdoc />
     public bool TryGetState(long sensorId, [MaybeNullWhen(false)] out SensorState state)
     {
         return _sensorEvents.TryGetValue(sensorId, out state);

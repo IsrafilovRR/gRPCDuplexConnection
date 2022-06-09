@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeatherSystem.EventClient.Storages;
-using WeatherSystem.EventClient.Storages.Interfaces;
 
 namespace WeatherSystem.EventClient.Controllers;
 

@@ -3,34 +3,38 @@ using WeatherSystem.EventsGenerator.Storages;
 
 namespace WeatherSystem.EventsGenerator.HostedServices;
 
+/// <summary>
+/// Hosted service for init work, for example this one generates sensors
+/// </summary>
 public class InitHostedService : IHostedService
 {
-    private readonly ISensorStore _sensorStore;
+    private readonly ISensorStorage _sensorStorage;
     private readonly ILogger<InitHostedService> _logger;
 
-    public InitHostedService(ISensorStore sensorStore, ILogger<InitHostedService> logger)
+    public InitHostedService(ISensorStorage sensorStorage, ILogger<InitHostedService> logger)
     {
-        _sensorStore = sensorStore;
+        _sensorStorage = sensorStorage;
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _sensorStore.AddOrUpdateSensor(1, new Sensor
+        _sensorStorage.AddOrUpdateSensor(1, new Sensor
         {
             Id = 1,
             Name = "HomeSensor",
             Type = SensorType.Inside
         });
 
-        _sensorStore.AddOrUpdateSensor(2, new Sensor
+        _sensorStorage.AddOrUpdateSensor(2, new Sensor
         {
             Id = 2,
             Name = "OutsideSensor",
             Type = SensorType.Outside
         });
         
-        _sensorStore.AddOrUpdateSensor(3, new Sensor
+        _sensorStorage.AddOrUpdateSensor(3, new Sensor
         {
             Id = 3,
             Name = "OutsideSensor",
@@ -40,6 +44,7 @@ public class InitHostedService : IHostedService
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc />
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;

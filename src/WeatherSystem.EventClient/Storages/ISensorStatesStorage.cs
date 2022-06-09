@@ -1,6 +1,6 @@
 ﻿using WeatherSystem.EventClient.Models;
 
-namespace WeatherSystem.EventClient.Storages.Interfaces;
+namespace WeatherSystem.EventClient.Storages;
 
 /// <summary>
 /// Sensors states storage

@@ -8,16 +8,19 @@ using WeatherSystem.EventsGenerator.Storages;
 
 namespace WeatherSystem.EventsGenerator.GrpcServices;
 
+/// <summary>
+/// Proto service which generates event to stream, also receives event, because duplex method here
+/// </summary>
 public class EventGeneratorService : EventGenerator.EventGeneratorBase
 {
-    private readonly ISensorStatesStore _sensorStateStore;
+    private readonly ISensorStatesStorage _sensorStateStorage;
     private readonly ILogger<EventGeneratorService> _logger;
     private readonly GeneratorOptions _generatorOptions;
 
-    public EventGeneratorService(ISensorStatesStore sensorStateStore, ISensorStore sensorStore,
+    public EventGeneratorService(ISensorStatesStorage sensorStateStorage, ISensorStorage sensorStorage,
         ILogger<EventGeneratorService> logger, IOptions<GeneratorOptions> generatorSettings)
     {
-        _sensorStateStore = sensorStateStore;
+        _sensorStateStorage = sensorStateStorage;
         _logger = logger;
         _generatorOptions = generatorSettings.Value ?? throw new ArgumentException("Generator settings object is null");
     }
@@ -28,12 +31,14 @@ public class EventGeneratorService : EventGenerator.EventGeneratorBase
     {
         try
         {
+            // hashSet of the subscribed ids
             var subscribedSensorIds = new HashSet<long>();
 
             Task.Run(async () =>
             {
                 while (!context.CancellationToken.IsCancellationRequested)
                 {
+                    // if we received a message from request stream, then we need to update our ids collection
                     while (await requestStream.MoveNext(context.CancellationToken))
                     {
                         var sensorIds = requestStream.Current.SensorId.ToList();
@@ -60,11 +65,15 @@ public class EventGeneratorService : EventGenerator.EventGeneratorBase
         }
     }
 
+    /// <summary>
+    /// Method takes state of the requested sensors
+    /// </summary>
+    /// <param name="sensorsIds">Requested sensor ids</param>
     private IEnumerable<GetSensorEventsResponse> GenerateSensorsEvents(long[] sensorsIds)
     {
         foreach (var sensorId in sensorsIds)
         {
-            if (!_sensorStateStore.TryGetState(sensorId, out var sensorState))
+            if (!_sensorStateStorage.TryGetState(sensorId, out var sensorState))
             {
                 continue;
             }
