@@ -26,20 +26,28 @@ public class InitHostedService : IHostedService
             Name = "HomeSensor",
             Type = SensorType.Inside
         });
-
+        
         _sensorStorage.AddOrUpdateSensor(2, new Sensor
         {
             Id = 2,
-            Name = "OutsideSensor",
-            Type = SensorType.Outside
+            Name = "HomeSensor2",
+            Type = SensorType.Inside
         });
-        
+
         _sensorStorage.AddOrUpdateSensor(3, new Sensor
         {
             Id = 3,
             Name = "OutsideSensor",
             Type = SensorType.Outside
         });
+        
+        _sensorStorage.AddOrUpdateSensor(4, new Sensor
+        {
+            Id = 4,
+            Name = "OutsideSensor2",
+            Type = SensorType.Outside
+        });
+
         
         return Task.CompletedTask;
     }

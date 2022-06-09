@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using Grpc.Core;
 using Polly;
-using WeatherSystem.EventClient.Models;
 using WeatherSystem.EventClient.Storages;
 using WeatherSystem.EventsGenerator.Proto;
 

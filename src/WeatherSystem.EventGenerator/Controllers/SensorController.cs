@@ -22,7 +22,7 @@ public class SensorController : ControllerBase
     /// Get one sensor state by id
     /// </summary>
     [HttpGet("{id:long}")]
-    public ActionResult GetSensorState(int id)
+    public async Task<ActionResult> GetSensorState(int id)
     {
         if (_sensorStatesStorage.TryGetState(id, out var state))
         {
@@ -36,7 +36,7 @@ public class SensorController : ControllerBase
     /// Get all available sensors state 
     /// </summary>
     [HttpGet]
-    public ActionResult GetSensorsState()
+    public async Task<ActionResult> GetSensorsState()
     {
         return Ok(_sensorStatesStorage.GetAllSensorsWithStates());
     }

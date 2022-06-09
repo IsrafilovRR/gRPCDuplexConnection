@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WeatherSystem.EventClient.Services;
 using WeatherSystem.EventClient.Storages;
 
 namespace WeatherSystem.EventClient.Controllers;
@@ -10,15 +11,28 @@ namespace WeatherSystem.EventClient.Controllers;
 public class AggregationsController : ControllerBase
 {
     private readonly ISensorStatesAggregatedStorage _aggregatedStorage;
+    private readonly IAggregationCalculationService _aggregationCalculationService;
 
-    public AggregationsController(ISensorStatesAggregatedStorage aggregatedStorage)
+    public AggregationsController(ISensorStatesAggregatedStorage aggregatedStorage, IAggregationCalculationService aggregationCalculationService)
     {
         _aggregatedStorage = aggregatedStorage;
+        _aggregationCalculationService = aggregationCalculationService;
     }
     
+    /// <summary>
+    /// Get last aggregation
+    /// </summary>
     [HttpGet("last")]
-    public ActionResult GetLastAggregation()
+    public async Task<ActionResult> GetLastAggregation()
     {
         return Ok(_aggregatedStorage.GetLastAggregation());
+    }
+    
+    /// <summary>
+    /// Get aggregation based on other aggregations
+    /// </summary>
+    public async Task<ActionResult> GetAggregationFromStartTime([FromQuery] DateTime startTime)
+    {
+        return Ok(_aggregationCalculationService.GetAggregatedStatesByStartTime(startTime));
     }
 }

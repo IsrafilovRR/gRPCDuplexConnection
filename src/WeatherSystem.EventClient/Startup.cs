@@ -5,6 +5,7 @@ using Grpc.Net.Client.Configuration;
 using Polly;
 using WeatherSystem.EventClient.HostedServices;
 using WeatherSystem.EventClient.Options;
+using WeatherSystem.EventClient.Services;
 using WeatherSystem.EventClient.Storages;
 using WeatherSystem.EventClient.Storages.Impl;
 using WeatherSystem.EventsGenerator.Proto;
@@ -34,6 +35,8 @@ namespace WeatherSystem.EventClient
             services.AddSingleton<ISubscriptionsStorage, SubscriptionsStorage>();
             services.AddSingleton<ISensorStatesStorage, SensorStatesStorage>();
             services.AddSingleton<ISensorStatesAggregatedStorage, SensorStatesAggregatedStorage>();
+            
+            services.AddScoped<IAggregationCalculationService, AggregationCalculationService>();
 
             services.Configure<AggregationOptions>(_configuration.GetSection("AggregationOptions"));
             

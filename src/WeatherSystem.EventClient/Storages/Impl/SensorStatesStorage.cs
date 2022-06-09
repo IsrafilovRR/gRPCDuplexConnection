@@ -36,6 +36,12 @@ public class SensorStatesStorage : ISensorStatesStorage
         return result;
     }
 
+    /// <inheritdoc />
+    public IEnumerable<SensorEvent> GetStatesBySensorId(long sensorId)
+    {
+        return _sensorsStates.ContainsKey(sensorId) ? _sensorsStates[sensorId] : new List<SensorEvent>();
+    }
+
     /// <summary>
     /// Get sensor event from timespan and till now
     /// </summary>
