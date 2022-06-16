@@ -51,7 +51,7 @@ public class ClientLimitsCacheUpdaterHostedService : BackgroundService
                 _logger.LogError("The exception handled during client request limits cache updating.", exception);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(CacheUpdatePeriodMinutes), stoppingToken);
         }
     }
 }
