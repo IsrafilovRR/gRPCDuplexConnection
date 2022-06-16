@@ -17,6 +17,7 @@ public class SensorEventsBackgroundService : BackgroundService
     private readonly ISensorStatesStorage _sensorStatesStorage;
 
     private const int MaxRetries = int.MaxValue;
+    private const int RetryPeriodSeconds = 5;
 
     /// <summary>
     /// Ctor
@@ -35,7 +36,7 @@ public class SensorEventsBackgroundService : BackgroundService
         // create retry policy for reconnect to server 
         var retryPolicy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(retryCount: MaxRetries,
-                sleepDurationProvider: _ => TimeSpan.FromSeconds(5),
+                sleepDurationProvider: _ => TimeSpan.FromSeconds(RetryPeriodSeconds),
                 onRetry: (exception, sleepDuration, attemptNumber, context) =>
                 {
                     _logger.LogWarning($"Retrying in {sleepDuration}. {attemptNumber} / {MaxRetries}");

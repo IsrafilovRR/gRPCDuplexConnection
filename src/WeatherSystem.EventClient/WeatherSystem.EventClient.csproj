@@ -27,5 +27,9 @@
         <GrpServices>Service</GrpServices>
       </Protobuf>
     </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\common\WeatherSystem.Common.RateLimiter\WeatherSystem.Common.RateLimiter.csproj" />
+    </ItemGroup>
 
 </Project>
