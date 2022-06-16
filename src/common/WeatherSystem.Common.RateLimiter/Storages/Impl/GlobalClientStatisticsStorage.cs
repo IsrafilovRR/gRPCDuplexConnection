@@ -4,16 +4,19 @@ using WeatherSystem.Common.RateLimiter.Models;
 
 namespace WeatherSystem.Common.RateLimiter.Storages.Impl;
 
+/// <inheritdoc />
 public class GlobalClientStatisticsStorage : IGlobalClientStatisticsStorage
 {
     private readonly ConcurrentDictionary<string, ClientStatistics> _clientStatistics = new();
 
-    public bool GetClientStatistic(string ipAddress, [MaybeNullWhen(false)] out ClientStatistics clientStatistics)
+    /// <inheritdoc />
+    public bool GetClientStatistics(string ipAddress, [MaybeNullWhen(false)] out ClientStatistics clientStatistics)
     {
         return _clientStatistics.TryGetValue(ipAddress, out clientStatistics);
     }
 
-    public bool AddClientStatistic(string ipAddress, ClientStatistics clientStatistics)
+    /// <inheritdoc />
+    public bool AddClientStatistics(string ipAddress, ClientStatistics clientStatistics)
     {
         return _clientStatistics.TryAdd(ipAddress, clientStatistics);
     }

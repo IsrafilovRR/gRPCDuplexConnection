@@ -1,12 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using WeatherSystem.Common.RateLimiter.Middlewares;
 
-namespace WeatherSystem.Common.RateLimiter.ServiceCollectionExtensions;
+namespace WeatherSystem.Common.RateLimiter.Extensions;
 
-public static class EndpointRoutingApplicationBuilderExtensions
+/// <summary>
+/// IApplicationBuilder extensions for request limiter
+/// </summary>
+public static class ApplicationBuilderExtensions
 {
     public static IApplicationBuilder UseRequestLimiter(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<RequestLimiterMiddleware>();
+        
     }
 }

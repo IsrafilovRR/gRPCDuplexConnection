@@ -3,7 +3,7 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Configuration;
 using Polly;
-using WeatherSystem.Common.RateLimiter.ServiceCollectionExtensions;
+using WeatherSystem.Common.RateLimiter.Extensions;
 using WeatherSystem.EventClient.HostedServices;
 using WeatherSystem.EventClient.Options;
 using WeatherSystem.EventClient.Services;

@@ -4,12 +4,14 @@ using WeatherSystem.Common.RateLimiter.Models;
 
 namespace WeatherSystem.Common.RateLimiter.Storages.Impl;
 
+/// <inheritdoc />
 public class SeparateEndpointClientStatisticsStorage : ISeparateEndpointClientStatisticsStorage
 {
     // key value pair is like that: ip address -> <endpoint, statistics> 
     private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, ClientStatistics>> _clientStatistics =
         new();
 
+    /// <inheritdoc />
     public bool GetClientStatistic(string ipAddress, string endpoint,
         [MaybeNullWhen(false)] out ClientStatistics clientStatistics)
     {
@@ -23,6 +25,7 @@ public class SeparateEndpointClientStatisticsStorage : ISeparateEndpointClientSt
         return false;
     }
 
+    /// <inheritdoc />
     public bool AddClientStatistic(string ipAddress, string endpoint, ClientStatistics clientStatistics)
     {
         var endpointStatisticsMap = new ConcurrentDictionary<string, ClientStatistics>();

@@ -4,29 +4,31 @@ using WeatherSystem.Common.RateLimiter.Storages;
 
 namespace WeatherSystem.Common.RateLimiter.Services;
 
-public class LimitsRequestCalculationService : ILimitsRequestCalculationService
+/// <inheritdoc />
+public class LimitsRequestCheckerService : ILimitsRequestCheckerService
 {
     private readonly IGlobalClientStatisticsStorage _globalClientStatisticsStorage;
     private readonly ISeparateEndpointClientStatisticsStorage _endpointClientStatisticsStorage;
-    private readonly ILogger<LimitsRequestCalculationService> _logger;
+    private readonly ILogger<LimitsRequestCheckerService> _logger;
 
-    public LimitsRequestCalculationService(IGlobalClientStatisticsStorage globalClientStatisticsStorage,
+    public LimitsRequestCheckerService(IGlobalClientStatisticsStorage globalClientStatisticsStorage,
         ISeparateEndpointClientStatisticsStorage endpointClientStatisticsStorage,
-        ILogger<LimitsRequestCalculationService> logger)
+        ILogger<LimitsRequestCheckerService> logger)
     {
         _globalClientStatisticsStorage = globalClientStatisticsStorage;
         _endpointClientStatisticsStorage = endpointClientStatisticsStorage;
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public bool IsGlobalRequestNumberExceeded(string ipAddress, RequestLimits requestLimits)
     {
         var statisticSuccessfullyAdded = false;
-        
+
         // firstly we have to check if statistics exists for the client with ip address
-        if (!_globalClientStatisticsStorage.GetClientStatistic(ipAddress, out var globalStatistics))
+        if (!_globalClientStatisticsStorage.GetClientStatistics(ipAddress, out var globalStatistics))
         {
-            statisticSuccessfullyAdded = _globalClientStatisticsStorage.AddClientStatistic(ipAddress,
+            statisticSuccessfullyAdded = _globalClientStatisticsStorage.AddClientStatistics(ipAddress,
                 new ClientStatistics
                 {
                     RequestCount = 1,
@@ -41,6 +43,7 @@ public class LimitsRequestCalculationService : ILimitsRequestCalculationService
             return false;
         }
 
+        bool requestCountExceeded;
         lock (globalStatistics)
         {
             // if predicate true that means we passed frame and should reset request count
@@ -48,19 +51,20 @@ public class LimitsRequestCalculationService : ILimitsRequestCalculationService
             {
                 globalStatistics.RequestCount = 1;
                 globalStatistics.FirstRequestInFrameStartTime = DateTime.UtcNow;
-                
-                _logger.LogDebug($"Started new fixed window frame for ip address {ipAddress}.");
-                return false;
+                requestCountExceeded = false;
             }
-
-            globalStatistics.RequestCount++;
-            
-            _logger.LogDebug($"Request count for ip address {ipAddress} is {globalStatistics.RequestCount}.");
-            
-            return globalStatistics.RequestCount > requestLimits.MaxRequests;
+            else
+            {
+                globalStatistics.RequestCount++;
+                requestCountExceeded = globalStatistics.RequestCount > requestLimits.MaxRequests;
+            }
         }
+
+        _logger.LogDebug($"Request count for {ipAddress} exceeded - {requestCountExceeded})");
+        return requestCountExceeded;
     }
 
+    /// <inheritdoc />
     public bool IsSpecialEndpointRequestNumberExceeded(string ipAddress, string endpoint, RequestLimits requestLimits)
     {
         var statisticSuccessfullyAdded = false;
@@ -82,6 +86,7 @@ public class LimitsRequestCalculationService : ILimitsRequestCalculationService
             return false;
         }
 
+        bool requestCountExceeded;
         lock (endpointStatistics)
         {
             // if predicate true that means we passed frame and should reset request count
@@ -89,11 +94,16 @@ public class LimitsRequestCalculationService : ILimitsRequestCalculationService
             {
                 endpointStatistics.RequestCount = 1;
                 endpointStatistics.FirstRequestInFrameStartTime = DateTime.UtcNow;
-                return false;
+                requestCountExceeded = false;
             }
-
-            endpointStatistics.RequestCount++;
-            return endpointStatistics.RequestCount > requestLimits.MaxRequests;
+            else
+            {
+                endpointStatistics.RequestCount++;
+                requestCountExceeded = endpointStatistics.RequestCount > requestLimits.MaxRequests;
+            }
         }
+
+        _logger.LogDebug($"Request count for {ipAddress} and {endpoint} exceeded - {requestCountExceeded})");
+        return requestCountExceeded;
     }
 }

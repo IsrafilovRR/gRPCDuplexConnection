@@ -27,8 +27,9 @@ public class RequestLimiterMiddleware
         _options = options?.Value ?? throw new ArgumentNullException("RequestLimiterOptions");
     }
 
-    public async Task InvokeAsync(HttpContext context, IClientIndividualLimitsStorage clientIndividualLimitsStorage,
-        ILimitsRequestCalculationService limitsRequestCalculationService)
+    public async Task InvokeAsync(HttpContext context,
+        IClientIndividualRequestLimitsCache clientIndividualRequestLimitsCache,
+        ILimitsRequestCheckerService limitsRequestCheckerService)
     {
         var endpoint = context.GetEndpoint();
         if (endpoint == null || context.Connection.RemoteIpAddress == null)
@@ -41,8 +42,11 @@ public class RequestLimiterMiddleware
             var ipAddress = context.Connection.RemoteIpAddress.ToString();
             var endpointString = context.Request.Path;
             var endpointLimitsAttribute = endpoint?.Metadata.GetMetadata<RequestLimitsAttribute>();
+
+            // check if we have individual limits for the client in the chace
             var individualClientLimitsExists =
-                clientIndividualLimitsStorage.GetRequestLimitsByIpAddress(ipAddress, out var individualClientLimits);
+                clientIndividualRequestLimitsCache.GetRequestLimitsByIpAddress(ipAddress,
+                    out var individualClientLimits);
 
             var requestLimitsExceeded = true;
 
@@ -54,12 +58,12 @@ public class RequestLimiterMiddleware
                     MaxRequests = endpointLimitsAttribute.MaxRequests,
                     TimeWindow = endpointLimitsAttribute.GetTimeWindowTimeSpan()
                 };
-                
+
                 _logger.LogDebug($"Endpoint {endpointString} has its own limits. Will check it.");
 
                 // if yes, we have to check endpoint limits
                 // moreover if we have individual limits, then we apply them for the endpoint for current ip
-                requestLimitsExceeded = limitsRequestCalculationService.IsSpecialEndpointRequestNumberExceeded(
+                requestLimitsExceeded = limitsRequestCheckerService.IsSpecialEndpointRequestNumberExceeded(
                     ipAddress,
                     endpointString,
                     individualClientLimitsExists && individualClientLimits != null
@@ -69,9 +73,10 @@ public class RequestLimiterMiddleware
             else
             {
                 _logger.LogDebug($"Endpoint {endpointString} doesn't have its own limits.");
+                
                 // if not, then we have to check global limits
                 // moreover if we have individual limits, then we apply them for as global limits for current ip
-                requestLimitsExceeded = limitsRequestCalculationService.IsGlobalRequestNumberExceeded(ipAddress,
+                requestLimitsExceeded = limitsRequestCheckerService.IsGlobalRequestNumberExceeded(ipAddress,
                     individualClientLimitsExists && individualClientLimits != null
                         ? individualClientLimits
                         : new RequestLimits

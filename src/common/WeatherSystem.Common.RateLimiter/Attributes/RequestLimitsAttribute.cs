@@ -1,25 +1,25 @@
 ﻿namespace WeatherSystem.Common.RateLimiter.Attributes;
 
 /// <summary>
-/// 
+/// Attribute to limit requests count during rime interval
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
 public class RequestLimitsAttribute : Attribute
 {
     /// <summary>
-    /// 
+    /// Max request
+    /// </summary>
+    public uint MaxRequests { get; init; }
+
+    /// <summary>
+    /// Time window 
     /// </summary>
     public uint TimeWindow { get; init; }
 
     /// <summary>
-    /// 
+    /// Measure
     /// </summary>
     public Measure Measure { get; init; }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public uint MaxRequests { get; init; }
 
     public TimeSpan GetTimeWindowTimeSpan()
     {

@@ -3,24 +3,17 @@
 namespace WeatherSystem.Common.RateLimiter.Services;
 
 /// <summary>
-/// 
+/// LimitsRequests checker service
 /// </summary>
-public interface ILimitsRequestCalculationService
+public interface ILimitsRequestCheckerService
 {
     /// <summary>
-    /// 
+    /// Is global request number exceeded
     /// </summary>
-    /// <param name="ipAddress"></param>
-    /// <param name="requestLimitsAttribute"></param>
-    /// <returns></returns>
     bool IsGlobalRequestNumberExceeded(string ipAddress, RequestLimits requestLimitsAttribute);
     
     /// <summary>
-    /// 
+    /// Is special endpoint request number exceeded
     /// </summary>
-    /// <param name="ipAddress"></param>
-    /// <param name="endpoint"></param>
-    /// <param name="requestLimitsAttribute"></param>
-    /// <returns></returns>
     bool IsSpecialEndpointRequestNumberExceeded(string ipAddress, string endpoint, RequestLimits requestLimitsAttribute);
 }

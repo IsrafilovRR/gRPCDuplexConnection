@@ -3,9 +3,18 @@ using WeatherSystem.Common.RateLimiter.Models;
 
 namespace WeatherSystem.Common.RateLimiter.Storages;
 
+/// <summary>
+/// Storage for clients global statistics
+/// </summary>
 public interface IGlobalClientStatisticsStorage
 {
-    bool GetClientStatistic(string ipAddress, [MaybeNullWhen(false)] out ClientStatistics clientStatistics);
+    /// <summary>
+    /// Get client statistics
+    /// </summary>
+    bool GetClientStatistics(string ipAddress, [MaybeNullWhen(false)] out ClientStatistics clientStatistics);
 
-    bool AddClientStatistic(string ipAddress, ClientStatistics clientStatistics);
+    /// <summary>
+    /// Add client statistics 
+    /// </summary>
+    bool AddClientStatistics(string ipAddress, ClientStatistics clientStatistics);
 }

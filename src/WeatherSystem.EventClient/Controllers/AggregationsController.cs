@@ -25,7 +25,7 @@ public class AggregationsController : ControllerBase
     /// Get last aggregation
     /// </summary>
     [HttpGet("last")]
-    [RequestLimits(MaxRequests = 10, TimeWindow = 1, Measure = Measure.Minutes)]
+    [RequestLimits(MaxRequests = 20, TimeWindow = 1, Measure = Measure.Minutes)]
     public async Task<ActionResult> GetLastAggregation()
     {
         return Ok(_aggregatedStorage.GetLastAggregation());
