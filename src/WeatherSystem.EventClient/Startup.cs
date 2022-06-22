@@ -3,6 +3,7 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Configuration;
 using Polly;
+using WeatherSystem.Common.RateLimiter.Extensions;
 using WeatherSystem.EventClient.HostedServices;
 using WeatherSystem.EventClient.Options;
 using WeatherSystem.EventClient.Services;
@@ -15,43 +16,50 @@ namespace WeatherSystem.EventClient
     public class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IHostEnvironment _hostEnvironment;
 
-        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
-            _hostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore();
-            
+            services.AddMvc();
+
             // hosted services
-            services.AddHostedService<SensorEventsBackgroundService>();
+            // services.AddHostedService<SensorEventsBackgroundService>();
             services.AddHostedService<AggregateSensorStatesHostedService>();
 
             // storages
             services.AddSingleton<ISubscriptionsStorage, SubscriptionsStorage>();
             services.AddSingleton<ISensorStatesStorage, SensorStatesStorage>();
             services.AddSingleton<ISensorStatesAggregatedStorage, SensorStatesAggregatedStorage>();
-            
+
+            services.AddRequestLimiterServices(_configuration);
+
             services.AddScoped<IAggregationCalculationService, AggregationCalculationService>();
 
             services.Configure<AggregationOptions>(_configuration.GetSection("AggregationOptions"));
-            
-            services.AddGrpcClient<EventGenerator.EventGeneratorClient>(
-                options =>
-                {
-                    options.Address = new Uri("https://localhost:7235/");
-                });
-        }
 
+            // services.AddGrpcClient<EventGenerator.EventGeneratorClient>(
+            //     options => { options.Address = new Uri("https://localhost:7235/"); });
+
+            services.AddSwaggerGen();
+        }
 
         public void Configure(IApplicationBuilder app)
+        {
+            app.UseRouting();
+            app.UseRequestLimiter();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
             {
-                app.UseRouting();
-                app.UseEndpoints(endpoints => endpoints.MapControllers());
-            }
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                options.RoutePrefix = string.Empty;
+            });
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
+}

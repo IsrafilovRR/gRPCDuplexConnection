@@ -3,7 +3,7 @@
     "WeatherSystem.EventClient": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
+      "launchBrowser": true,
       "applicationUrl": "https://localhost:7063",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
