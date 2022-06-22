@@ -6,8 +6,7 @@ CREATE DATABASE ozon;
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders
 (
-    id           BIGSERIAL
-        CONSTRAINT pk_orders_id PRIMARY KEY,
+    id           BIGSERIAL       CONSTRAINT pk_orders_id PRIMARY KEY,
     creationDate timestamp      NOT NULL DEFAULT current_timestamp,
     clientId     BIGINT         NOT NULL,
     isCompleted  BOOLEAN        NOT NULL,
@@ -86,4 +85,3 @@ SELECT random_between(1, 50),
          }
        ]'::json
 FROM generate_series(1, 5000);
-  
