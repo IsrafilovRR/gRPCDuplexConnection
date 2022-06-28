@@ -32,3 +32,17 @@ own request limits too. Here we take individual limits, because it is more prior
 Is we don't have any special limits, like individual or endpoint, then we take global limits.
 
 Then we send taken limit, ip address and endpoint (if it has own limits) to  ILimitsRequestCheckerService.
+
+# WeatherSystem.Common.DataAccess
+
+This is the library that contains repositories with connection to postgresql database.
+
+## Init
+
+Run scripts/init_database.sql script
+
+## OrderRepository 
+OrderRepository has two methods:
+
+- GetOrdersAsync - returns orders as async enumerable
+- SaveOrdersAsync - do bulk insert to db

@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{D2AD8D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSystem.Common.RateLimiter", "src\common\WeatherSystem.Common.RateLimiter\WeatherSystem.Common.RateLimiter.csproj", "{93170509-BF9A-4397-939D-79EDFD018572}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSystem.Common.DataAccess", "src\common\WeatherSystem.Common.DataAccess\WeatherSystem.Common.DataAccess.csproj", "{A7BF397E-9DA0-4745-81E6-7991CF9674F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherSystem.Common.Abstractions", "src\common\WeatherSystem.Common.Abstractions\WeatherSystem.Common.Abstractions.csproj", "{F43C0A7C-6993-41BA-98DE-6B2AE78C789A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +26,8 @@ Global
 		{93723FDD-676F-47BD-B481-FFBCE1F5329D} = {FB699834-9FD9-4ECE-9DFC-6EC8512CD58D}
 		{D2AD8D74-97C0-440C-BF5B-52A5DC6072AF} = {FB699834-9FD9-4ECE-9DFC-6EC8512CD58D}
 		{93170509-BF9A-4397-939D-79EDFD018572} = {D2AD8D74-97C0-440C-BF5B-52A5DC6072AF}
+		{A7BF397E-9DA0-4745-81E6-7991CF9674F2} = {D2AD8D74-97C0-440C-BF5B-52A5DC6072AF}
+		{F43C0A7C-6993-41BA-98DE-6B2AE78C789A} = {D2AD8D74-97C0-440C-BF5B-52A5DC6072AF}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BC4F067B-0F50-4966-9ECF-568C8CB75E08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,5 +42,13 @@ Global
 		{93170509-BF9A-4397-939D-79EDFD018572}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93170509-BF9A-4397-939D-79EDFD018572}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93170509-BF9A-4397-939D-79EDFD018572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7BF397E-9DA0-4745-81E6-7991CF9674F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7BF397E-9DA0-4745-81E6-7991CF9674F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7BF397E-9DA0-4745-81E6-7991CF9674F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7BF397E-9DA0-4745-81E6-7991CF9674F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F43C0A7C-6993-41BA-98DE-6B2AE78C789A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F43C0A7C-6993-41BA-98DE-6B2AE78C789A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F43C0A7C-6993-41BA-98DE-6B2AE78C789A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F43C0A7C-6993-41BA-98DE-6B2AE78C789A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

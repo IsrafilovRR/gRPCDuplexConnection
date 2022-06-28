@@ -3,6 +3,8 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Configuration;
 using Polly;
+using WeatherSystem.Common.DataAccess;
+using WeatherSystem.Common.DataAccess.Extensions;
 using WeatherSystem.Common.RateLimiter.Extensions;
 using WeatherSystem.EventClient.HostedServices;
 using WeatherSystem.EventClient.Options;
@@ -41,6 +43,8 @@ namespace WeatherSystem.EventClient
 
             services.Configure<AggregationOptions>(_configuration.GetSection("AggregationOptions"));
 
+            services.AddRepositories(_configuration);
+            
             // services.AddGrpcClient<EventGenerator.EventGeneratorClient>(
             //     options => { options.Address = new Uri("https://localhost:7235/"); });
 

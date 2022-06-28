@@ -29,6 +29,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <ProjectReference Include="..\common\WeatherSystem.Common.DataAccess\WeatherSystem.Common.DataAccess.csproj" />
       <ProjectReference Include="..\common\WeatherSystem.Common.RateLimiter\WeatherSystem.Common.RateLimiter.csproj" />
     </ItemGroup>
 
